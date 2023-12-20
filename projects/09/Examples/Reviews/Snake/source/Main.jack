@@ -1,0 +1,86 @@
+class Main {
+  static Model model;
+  static Controller controller;
+  static View view;
+  static int score;
+
+  function void main() {
+    do Main.init();
+
+    let model = Model.new(512, 256);
+    let controller = Controller.new(model);
+    let view = View.new(model);
+
+    do Main.run();
+
+    do model.dispose();
+    do controller.dispose();
+    do view.dispose();
+
+    return;
+  }
+
+  function void init() {
+    var char key;
+
+    do Output.printString("Welcome!");
+    do Output.moveCursor(3, 0);
+    do Output.printString("This is a clone of the Snake game.");
+    do Output.moveCursor(6, 0);
+    do Output.printString("If you eat 50 apples, you win!");
+    do Output.moveCursor(9, 0);
+    do Output.printString("(Press any key to start.)");
+
+    while (key = 0) {
+      do Utils.updateRandom();
+      let key = Keyboard.keyPressed();
+      do Sys.wait(10);
+    }
+
+    do Screen.clearScreen();
+
+    return;
+  }
+
+  function void run() {
+    var boolean exit;
+    var boolean won;
+    let exit = false;
+
+    do view.printScore(score);
+    do view.drawApple();
+
+    while (~exit) {
+      do view.eraseLast();
+      do controller.update();
+
+      let exit = model.isGameOver();
+
+      if (~exit) {
+        if (model.isAppleEaten()) {
+          do view.erasePreviousApple();
+          do view.drawApple();
+
+          let score = score + 1;
+          do view.printScore(score);
+
+          if (score = 50) {
+            let won = true;
+            let exit = true;
+          }
+        }
+
+        do view.drawHead();
+      }
+    }
+
+    if (won) {
+      do view.printGameWon();
+    } else {
+      do view.printGameLost();
+    }
+
+    return;
+  }
+}
+

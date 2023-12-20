@@ -1,0 +1,18 @@
+/** Implements enum-like class to have global access to cell type constants*/
+class CellType
+{
+    function int obstacle()
+    {
+        return -1;
+    }
+
+    function int empty()
+    {
+        return 0;
+    }
+
+    function int food()
+    {
+        return 1;
+    }
+}

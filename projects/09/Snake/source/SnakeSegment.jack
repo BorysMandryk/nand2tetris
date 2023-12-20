@@ -1,0 +1,172 @@
+/** Implements a snake segment as a node of a doubly-linked list*/
+class SnakeSegment
+{
+    field Cell cell;                // cell in which this segment is located
+    field SnakeSegment prev, next;  // pointer to a previous and next segment
+    
+    /** Creates a snake segment in a specified cell*/
+    constructor SnakeSegment new(Cell data)
+    {
+        let cell = data;
+        let prev = null;
+        let next = null;
+        do cell.setCellType(-1);
+        return this;
+    }
+
+    /** Disposes of this object and erases it*/
+    method void dispose()
+    {
+        do cell.setCellType(CellType.empty());
+        do cell.erase();   
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Prev getter*/
+    method SnakeSegment getPrev()
+    {
+        return prev;
+    }
+
+    /** Prev setter*/
+    method void setPrev(SnakeSegment segment)
+    {
+        let prev = segment;
+        return;
+    }
+
+    /** Next getter*/
+    method SnakeSegment getNext()
+    {
+        return next;
+    }
+
+    /** Next setter*/
+    method void setNext(SnakeSegment segment)
+    {
+        let next = segment;
+        return;
+    }
+
+    /** Cell getter*/
+    method Cell getCell()
+    {
+        return cell;
+    }
+
+    /** Draws this segment*/
+    method void drawSegment() {
+        var int memAddress;
+        let memAddress = 16384 + cell.calculateLocation();
+        do Memory.poke(memAddress+0, 4080);
+        do Memory.poke(memAddress+32, 4080);
+        do Memory.poke(memAddress+64, 16348);
+        do Memory.poke(memAddress+96, 16332);
+        do Memory.poke(memAddress+128, -25);
+        do Memory.poke(memAddress+160, -9);
+        do Memory.poke(memAddress+192, -13);
+        do Memory.poke(memAddress+224, -5);
+        do Memory.poke(memAddress+256, -1);
+        do Memory.poke(memAddress+288, -1);
+        do Memory.poke(memAddress+320, -1);
+        do Memory.poke(memAddress+352, -1);
+        do Memory.poke(memAddress+384, 16380);
+        do Memory.poke(memAddress+416, 16380);
+        do Memory.poke(memAddress+448, 4080);
+        do Memory.poke(memAddress+480, 4080);
+        return;
+    }
+
+    /** Draws snake's head in the cell facing up*/
+    method void drawHeadUp() {
+        var int memAddress;
+        let memAddress = 16384 + cell.calculateLocation();
+        do Memory.poke(memAddress+0, 2016);
+        do Memory.poke(memAddress+32, 4048);
+        do Memory.poke(memAddress+64, 4048);
+        do Memory.poke(memAddress+96, 8168);
+        do Memory.poke(memAddress+128, 16364);
+        do Memory.poke(memAddress+160, 16380);
+        do Memory.poke(memAddress+192, 16380);
+        do Memory.poke(memAddress+224, 28662);
+        do Memory.poke(memAddress+256, 20466);
+        do Memory.poke(memAddress+288, 24570);
+        do Memory.poke(memAddress+320, 32766);
+        do Memory.poke(memAddress+352, 32766);
+        do Memory.poke(memAddress+384, 32766);
+        do Memory.poke(memAddress+416, 16380);
+        do Memory.poke(memAddress+448, 8184);
+        do Memory.poke(memAddress+480, 8184);
+        return;
+    }
+
+    /** Draws snake's head in the cell facing down*/
+    method void drawHeadDown() {
+        var int memAddress;
+        let memAddress = 16384 + cell.calculateLocation();
+        do Memory.poke(memAddress+0, 8184);
+        do Memory.poke(memAddress+32, 8136);
+        do Memory.poke(memAddress+64, 16356);
+        do Memory.poke(memAddress+96, 32762);
+        do Memory.poke(memAddress+128, 32766);
+        do Memory.poke(memAddress+160, 32766);
+        do Memory.poke(memAddress+192, 24570);
+        do Memory.poke(memAddress+224, 20466);
+        do Memory.poke(memAddress+256, 28662);
+        do Memory.poke(memAddress+288, 16380);
+        do Memory.poke(memAddress+320, 16380);
+        do Memory.poke(memAddress+352, 16380);
+        do Memory.poke(memAddress+384, 8184);
+        do Memory.poke(memAddress+416, 4080);
+        do Memory.poke(memAddress+448, 4080);
+        do Memory.poke(memAddress+480, 2016);
+        return;
+    }
+
+    /** Draws snake's head in the cell facing left*/
+    method void drawHeadLeft() {
+        var int memAddress;
+        let memAddress = 16384 + cell.calculateLocation();
+        do Memory.poke(memAddress+0, 0);
+        do Memory.poke(memAddress+32, 8064);
+        do Memory.poke(memAddress+64, 15600);
+        do Memory.poke(memAddress+96, -392);
+        do Memory.poke(memAddress+128, -10);
+        do Memory.poke(memAddress+160, -7);
+        do Memory.poke(memAddress+192, -1);
+        do Memory.poke(memAddress+224, -1);
+        do Memory.poke(memAddress+256, -1);
+        do Memory.poke(memAddress+288, -1);
+        do Memory.poke(memAddress+320, -1);
+        do Memory.poke(memAddress+352, -2);
+        do Memory.poke(memAddress+384, -392);
+        do Memory.poke(memAddress+416, 15600);
+        do Memory.poke(memAddress+448, 8064);
+        do Memory.poke(memAddress+480, 0);
+        return;
+    }
+
+    /** Draws snake's head in the cell facing right*/
+    method void drawHeadRight() {
+        var int memAddress;
+        let memAddress = 16384 + cell.calculateLocation();
+        do Memory.poke(memAddress+0, 0);
+        do Memory.poke(memAddress+32, 504);
+        do Memory.poke(memAddress+64, 3892);
+        do Memory.poke(memAddress+96, 7795);
+        do Memory.poke(memAddress+128, 32765);
+        do Memory.poke(memAddress+160, -1);
+        do Memory.poke(memAddress+192, -1);
+        do Memory.poke(memAddress+224, -1);
+        do Memory.poke(memAddress+256, -1);
+        do Memory.poke(memAddress+288, -1);
+        do Memory.poke(memAddress+320, -1);
+        do Memory.poke(memAddress+352, 32767);
+        do Memory.poke(memAddress+384, 7807);
+        do Memory.poke(memAddress+416, 3900);
+        do Memory.poke(memAddress+448, 504);
+        do Memory.poke(memAddress+480, 0);
+        return;
+    }
+}

@@ -1,0 +1,133 @@
+class Snake {
+  field int direction;
+  field int length;
+  field Array body;
+  field int lastPos;
+
+  constructor Snake new(int x, int y) {
+    var int i;
+
+    let direction = 1;
+    let length = 3;
+    let lastPos = length - 1;
+    let body = Array.new(50 + length);
+
+    while (i < length) {
+      let body[i] = Point.new(x, y + (i * 10));
+      let i = i + 1;
+    }
+
+    return this;
+  }
+
+  method void dispose() {
+    do body.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void turnUp() {
+    if (~(direction = 3)) {
+      let direction = 1;
+    }
+
+    return;
+  }
+
+  method void turnRight() {
+    if (~(direction = 4)) {
+      let direction = 2;
+    }
+
+    return;
+  }
+
+  method void turnDown() {
+    if (~(direction = 1)) {
+      let direction = 3;
+    }
+
+    return;
+  }
+
+  method void turnLeft() {
+    if (~(direction = 2)) {
+      let direction = 4;
+    }
+
+    return;
+  }
+
+  method void move() {
+    var Point head;
+    var Point last;
+    var int prevX, prevY;
+
+    let head = body[0];
+    let last = body[lastPos];
+    do last.moveTo(head);
+
+    if (direction = 1) { do moveUp(head); }
+    if (direction = 2) { do moveRight(head); }
+    if (direction = 3) { do moveDown(head); }
+    if (direction = 4) { do moveLeft(head); }
+
+    let lastPos = lastPos - 1;
+    if (lastPos = 0) {
+      let lastPos = length - 1;
+    }
+
+    return;
+  }
+
+  method void moveAndGrow() {
+    var Point last, copy;
+
+    let last = body[lastPos];
+    let copy = Point.new(last.getX(), last.getY());
+
+    do move();
+
+    let lastPos = length;
+    let length = length + 1;
+    let body[lastPos] = copy;
+
+    return;
+  }
+
+  method void moveUp(Point point) {
+    var int y;
+    let y = point.getY();
+    do point.setY(y - 10);
+    return;
+  }
+
+  method void moveRight(Point point) {
+    var int x;
+    let x = point.getX();
+    do point.setX(x + 10);
+    return;
+  }
+
+  method void moveDown(Point point) {
+    var int y;
+    let y = point.getY();
+    do point.setY(y + 10);
+    return;
+  }
+
+  method void moveLeft(Point point) {
+    var int x;
+    let x = point.getX();
+    do point.setX(x - 10);
+    return;
+  }
+
+  method Array getBody() { return body; }
+
+  method Point getHead() { return body[0]; }
+
+  method Point getLast() { return body[lastPos]; }
+
+  method int getLength() { return length; }
+}

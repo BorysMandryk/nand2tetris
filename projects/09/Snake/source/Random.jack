@@ -1,0 +1,29 @@
+/** Implements linear congruential generator*/
+class Random
+{
+    field int number;
+    field int maxValue;
+
+    /** Creates new object with specified seed and max value*/
+    constructor Random new(int seed, int max)
+    {
+        let number = seed;
+        let maxValue = max;
+        return this;
+    }
+
+    /** Disposes of this object*/
+    method void dispose()
+    {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Gets next number*/
+    method int next()
+    {
+        let number = (21 * number + 21) & 511;  // number = (a * number + c) % m, where a = 21, c = 21, m = 511 
+        let number = number - (maxValue * (number / maxValue)); // gets the remainder
+        return number;
+    } 
+}

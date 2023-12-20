@@ -1,0 +1,133 @@
+/** Implements a snake as a doubly-linked list consisting of the SnakeSegment objects*/
+class Snake
+{
+    field SnakeSegment head, tail;  // pointers to head and tail segments
+    field boolean isGrowing;        // is needed to know if the snake is growing
+
+    /** Creates */
+    constructor Snake new(Cell headPos)
+    {
+        let head = SnakeSegment.new(headPos);
+
+        let tail = head;
+        let isGrowing = false;
+        return this;
+    }
+
+    /** Disposes of this object*/
+    method void dispose()
+    {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Moves the snake up on the screen*/
+    method void moveUp(Cell nextCell)
+    {
+        do move(nextCell);
+        do head.drawHeadUp();
+        return;
+    }
+    
+    /** Moves the snake down on the screen*/
+    method void moveDown(Cell nextCell)
+    {
+        do move(nextCell);
+        do head.drawHeadDown();
+        return;
+    }
+    
+    /** Moves the snake left on the screen*/
+    method void moveLeft(Cell nextCell)
+    {
+        do move(nextCell);
+        do head.drawHeadLeft();
+        return;
+    }
+    
+    /** Moves the snake right on the screen*/
+    method void moveRight(Cell nextCell)
+    {
+        do move(nextCell);
+        do head.drawHeadRight();
+        return;
+    }
+
+    /** Moves the snake*/
+    method void move(Cell nextCell)
+    {
+        do head.drawSegment();
+        do setNewHead(nextCell);
+
+        if (~isGrowing)
+        {
+            do removeTail();    
+        }
+        else
+        {
+            let isGrowing = false;
+        }
+
+        return;
+    }
+
+    /** Informs object that the snake is growing*/
+    method void grow()
+    {
+        let isGrowing = true;
+        return;
+    }
+
+    /** Removes tail segment and disposes of it*/
+    method void removeTail()
+    {
+        var SnakeSegment old;     
+
+        let old = tail;
+        let tail = old.getPrev();
+        if (~(tail = null))
+        {
+            do tail.setNext(null);
+        }
+        do old.dispose();
+        return;
+    }
+
+    /** Sets a new head segment from a cell */
+    method void setNewHead(Cell cell)
+    {
+        var SnakeSegment newHead;
+       
+        let newHead = SnakeSegment.new(cell);
+        do head.setPrev(newHead);
+        do newHead.setNext(head);
+        let head = newHead;
+        
+        return;
+    }
+
+    /** Returns head segment*/
+    method Cell getHead()
+    {
+        return head;
+    }
+
+    /** Returns head cell*/
+    method Cell getHeadCell()
+    {
+        return head.getCell();
+    }
+
+    /** Runs a destruction animation*/
+    method void destroyAnimation(int timeInterval)
+    {
+        var SnakeSegment prev;
+
+        while(~(tail=null))
+        {
+            do Sys.wait(timeInterval);
+            do removeTail();
+        }
+        return;
+    }
+}

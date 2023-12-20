@@ -1,0 +1,52 @@
+class Controller {
+  field Model model;
+
+  constructor Controller new(Model Amodel) {
+    let model = Amodel;
+    return this;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void update() {
+    var char key;
+    let key = delayAndGetInput();
+    do handleInput(key);
+    do model.moveSnake();
+    return;
+  }
+
+  /*
+  Need to check for input between delays otherwise it might not get registered
+  */
+  method char delayAndGetInput() {
+    var char key;
+    var int i;
+
+    while (i < 10) {
+      if (key = 0) {
+        let key = Keyboard.keyPressed();
+      }
+
+      do Sys.wait(10);
+      let i = i + 1;
+    }
+
+    return key;
+  }
+
+  method void handleInput(char key) {
+    if (~(key = 0)) {
+        if (key = 81)  { do model.gameOver(); }       // q key
+        if (key = 131) { do model.turnSnakeUp(); }    // up arrow
+        if (key = 132) { do model.turnSnakeRight(); } // right arrow
+        if (key = 133) { do model.turnSnakeDown(); }  // down arrow
+        if (key = 130) { do model.turnSnakeLeft(); }  // left arrow
+    }
+
+    return;
+  }
+}

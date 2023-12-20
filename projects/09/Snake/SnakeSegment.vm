@@ -1,0 +1,615 @@
+function SnakeSegment.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push constant 0
+pop this 1
+push constant 0
+pop this 2
+push this 0
+push constant 1
+neg
+call Cell.setCellType 2
+pop temp 0
+push pointer 0
+return
+function SnakeSegment.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call CellType.empty 0
+call Cell.setCellType 2
+pop temp 0
+push this 0
+call Cell.erase 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function SnakeSegment.getPrev 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function SnakeSegment.setPrev 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 1
+push constant 0
+return
+function SnakeSegment.getNext 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function SnakeSegment.setNext 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 2
+push constant 0
+return
+function SnakeSegment.getCell 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function SnakeSegment.drawSegment 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 0
+call Cell.calculateLocation 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 16348
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 16332
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 25
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 9
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 13
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 5
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function SnakeSegment.drawHeadUp 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 0
+call Cell.calculateLocation 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 2016
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 4048
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 4048
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 8168
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 16364
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 28662
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 20466
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 24570
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function SnakeSegment.drawHeadDown 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 0
+call Cell.calculateLocation 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 8136
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 16356
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 32762
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 32766
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 24570
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 20466
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 28662
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 16380
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 8184
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 4080
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 2016
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function SnakeSegment.drawHeadLeft 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 0
+call Cell.calculateLocation 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 8064
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 15600
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 392
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 10
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 7
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 2
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 392
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 15600
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 8064
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function SnakeSegment.drawHeadRight 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 0
+call Cell.calculateLocation 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 504
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 3892
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 7795
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 32765
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 1
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 32767
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 7807
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 3900
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 504
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 0
+return

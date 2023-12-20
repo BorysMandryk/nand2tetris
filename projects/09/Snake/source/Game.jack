@@ -1,0 +1,347 @@
+/**
+ * Implements the Snake game.
+ * This game allows the player to move a snake using arrow keys.
+ * The snake has to eat food to increase its length.
+ * The goal of the game is to get the longest snake possible.
+ * The score represents how much food was eaten.
+ * To start the game player has to press any arrow key.
+ * The game is over if the snake bumps into a wall or itself.
+ * To restart the game after it is over player needs to press the 'space' key.
+ * To quit the game player can press the 'q' key.
+ * Notice: input from the keyboard may sometimes not be read due to calls to the Sys.wait function between frames
+ */
+class Game
+{
+    static int DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT;   // Direction constants
+
+    field Grid grid;  
+    field Snake snake;
+    field int prevDirection, direction; // 0 - None, -1|1 - down|up, -2|2 - left|right
+    
+    field int score;                    
+    
+    field Random random;                // object of the Random class        
+    field int seedCounter;              // seed for the Random class
+    
+    field int waitTime;                 // time between frames
+    field boolean exit;
+
+    /** Creates new game object*/
+    constructor Game new()
+    {
+        let DIR_DOWN = -1;
+        let DIR_UP = 1;
+        let DIR_LEFT = -2;
+        let DIR_RIGHT = 2;
+        
+        let waitTime = 200;
+        let exit = false;
+        do restart();
+        return this;    
+    }
+
+    /** Disposes of this object*/
+    method void dispose()
+    {
+        if(~(grid = null))
+        {
+            do grid.dispose();
+        }
+        if(~(snake = null))
+        {
+            do snake.dispose();
+        }
+        if(~(random = null))
+        {
+            do random.dispose();
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Initializes variables before the start of the game*/
+    method void restart()
+    {
+        var Cell headCell;
+        var SnakeSegment head;
+        do Screen.clearScreen();
+        
+        let score = 0;
+        let prevDirection = 0;
+        let direction = 0;
+        let random = null;
+
+        let grid = Grid.new(0, 0, 16, 32);
+        let headCell = grid.getCell(8, 15);
+        let snake = Snake.new(headCell);
+        let head = snake.getHead();        
+        do head.drawHeadUp();
+
+        let seedCounter = 0;
+        return;
+    }
+
+    /** Runs the game*/
+    method void run()
+    {
+        while(~exit)
+        {
+            do startRoutine();
+
+            if(exit)
+            {
+                return;
+            }
+
+            while(~((direction = 0) | exit))
+            {
+                do readDirection();
+                do update();
+                do Sys.wait(waitTime);
+
+                do readQuit();
+            }
+
+            if(exit)
+            {
+                return;
+            }
+
+            do gameOverRoutine();
+        }
+
+        return;
+    }
+
+    /** Runs the start routine: waits for the player to press any arrow key*/
+    method void startRoutine()
+    {
+        var String pressArrowStr;
+        var int row, col, seed, cellCount;
+        let row = 9;
+        let col = 17;
+        let pressArrowStr = "Press any arrow key to start";
+        do Output.moveCursor(row, col);
+        do Output.printString(pressArrowStr);
+        
+        while((direction = 0) & (~exit))
+        {
+            let seedCounter = seedCounter + 1;
+            do readDirection();
+            do readQuit();
+        }
+        
+        do OutputHelper.eraseString(pressArrowStr, row, col);
+        do pressArrowStr.dispose();
+
+        if(exit)
+        {
+            return;
+        }
+
+        let seed = seedCounter & 32767;
+        let cellCount = grid.getCellCount();
+        let random = Random.new(seed, cellCount);
+        do generateFood();
+        return;
+    }
+
+    /** Updates every frame*/
+    method void update()
+    {
+        var Cell nextCell;
+        var int nextCellType;
+        let nextCell = getNextCell();
+        if(checkCrash(nextCell))
+        {
+            let direction = 0;
+            return;
+        }
+
+        let nextCellType = nextCell.getCellType();
+        if(nextCellType = CellType.food())
+        {
+            let score = score + 1;
+            do snake.grow();
+            do generateFood();
+        }
+        do moveSnake(nextCell);
+        return;
+    }
+
+    /** Gets next cell in the direction*/
+    method Cell getNextCell()
+    {
+        var Cell head, nextCell;
+        var int row, col;
+        let head = snake.getHeadCell();
+        let row = head.getRow();
+        let col = head.getCol();
+
+        // Checks if the current direction is the same as the previous direction 
+        if(((prevDirection = DIR_DOWN) & (direction = DIR_UP))
+        | ((prevDirection = DIR_UP) & (direction = DIR_DOWN))
+        | ((prevDirection = DIR_LEFT) & (direction = DIR_RIGHT))
+        | ((prevDirection = DIR_RIGHT) & (direction = DIR_LEFT)))
+        {
+            let direction = prevDirection;
+        }
+        let prevDirection = direction;
+
+        if(direction=DIR_DOWN)
+        {
+            let row = row + 1;
+        }
+        if(direction=DIR_UP)
+        {
+            let row = row - 1;
+        }
+        if(direction=DIR_LEFT)
+        {
+            let col = col - 1;
+        }
+        if(direction=DIR_RIGHT)
+        {
+            let col = col + 1;
+        }
+        let nextCell = grid.getCell(row, col);
+        return nextCell;
+    }
+
+    /** Reads direction from player input*/
+    method void readDirection()
+    {
+        var char key;
+        let key = Keyboard.keyPressed();
+        if(key = 131)   // arrow up
+        {
+            let direction = DIR_UP;
+        }
+        if (key = 133)  // arrow down
+        {
+            let direction = DIR_DOWN;
+        }
+        if (key = 130)  // arrow left
+        {
+            let direction = DIR_LEFT;
+        }
+        if (key = 132)  // arrow right
+        {
+            let direction = DIR_RIGHT;
+        }
+
+        return;
+    }
+
+    /** Generates food in the random empty cell*/
+    method void generateFood()
+    {
+        var int rand, r, c, cellType;
+        var Cell cell;
+
+        let cell = getRandomCell();
+        let cellType = cell.getCellType();
+        while(~(cellType = (CellType.empty())))
+        {
+            let cell = getRandomCell();
+            let cellType = cell.getCellType();
+        }
+        do cell.setCellType(CellType.food());
+        do cell.drawFood();
+        return;
+    }
+
+    /** Gets random cell*/
+    method Cell getRandomCell()
+    {
+        var int rand, cols, r, c;
+        let cols = grid.getCols(); 
+        let rand = random.next();
+        let r = rand / cols;
+        let c = rand - (r * cols);
+        return grid.getCell(r, c);
+    }
+
+    /** Checks if the snake crashes*/
+    method boolean checkCrash(Cell nextCell)
+    {
+        return nextCell.getCellType() = CellType.obstacle();
+    }
+
+    /** Draws the snake's head in the next cell based on the direction*/
+    method void moveSnake(Cell nextCell)
+    {
+        if(direction=DIR_DOWN)
+        {
+            do snake.moveDown(nextCell);
+        }
+        if(direction=DIR_UP)
+        {
+            do snake.moveUp(nextCell);
+        }
+        if(direction=DIR_LEFT)
+        {
+            do snake.moveLeft(nextCell);
+        }
+        if(direction=DIR_RIGHT)
+        {
+            do snake.moveRight(nextCell);
+        }
+        return;
+    }
+
+    /** Runs the game over routine: shows the player's score and waits for the player to press the space key*/
+    method void gameOverRoutine()
+    {
+        var char c;
+        var int i, length;
+
+        do snake.destroyAnimation((300 - (score / 2)));
+        
+        do grid.dispose();
+        do snake.dispose();
+        do random.dispose();
+
+        let grid = null;
+        let snake = null;
+        let random = null;
+        
+        do Output.moveCursor(11, 27);
+        do OutputHelper.printAnimation("GAME OVER", 200);
+
+        do Output.moveCursor(12, 27);
+        do OutputHelper.printAnimation("Score: ", 100);
+        do Output.printInt(score);
+
+        do pressToRestartAnimation("Press SPACE to restart", 18, 20, 500);
+        return;
+    }
+
+    /** Waits for the player to press the space key to restart*/
+    method void pressToRestartAnimation(String str, int row, int col, int timeInterval)
+    {
+        while (~exit)
+        {
+            do Output.moveCursor(row, col);
+            do Output.printString(str);
+            do Sys.wait(timeInterval);
+            do OutputHelper.eraseString(str, row, col);
+            do Sys.wait(timeInterval);
+            if ((Keyboard.keyPressed()) = 32)  // 'space' key
+            {
+                do restart();
+                do str.dispose();
+                return;
+            }
+            do readQuit();
+        }
+        return;
+    }
+
+    /** Reads if the player pressed a 'q' key to quit*/
+    method void readQuit()
+    {
+        let exit = Keyboard.keyPressed() = 81;  // 'q' key
+        return;
+    }
+}

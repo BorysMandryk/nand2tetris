@@ -1,0 +1,243 @@
+﻿// add
+// *(stack - 2) = *(stack - 2) + *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M+D
+
+// sub
+// *(stack - 2) = *(stack - 2) - *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+M=M-D
+
+// neg
+// -*(stack - 1)
+// stack = stack - 1
+@SP
+A=M-1
+M=-M
+
+// eq
+// *(stack - 2) = *(stack - 2) == *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@EQUAL_(eq_cnt)
+D;JEQ
+@SP
+A=M-1
+M=0
+@EQ_END_{_eqCnt}
+0;JMP
+(EQUAL_(eq_cnt))
+@SP
+A=M-1
+M=-1
+(EQ_END_{_eqCnt})
+
+// eq V2
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+M=0
+@EQ_END_{_eqCnt}
+D;JNE
+@SP
+A=M-1
+M=0
+(EQ_END_{_eqCnt})
+
+
+// gt
+// *(stack - 2) = *(stack - 2) > *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@GREATER_(gt_cnt)
+D;JGT
+@SP
+A=M-1
+M=0
+(GREATER_(gt_cnt))
+@SP
+A=M-1
+M=-1
+
+// lt
+// *(stack - 2) = *(stack - 2) < *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+D=M-D
+@LESS_(lt_cnt)
+D;JLT
+@SP
+A=M-1
+M=0
+(LESS_(lt_cnt))
+@SP
+A=M-1
+M=-1
+
+// and
+// *(stack - 2) = *(stack - 2) & *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D&M
+
+// or
+// *(stack - 2) = *(stack - 2) | *(stack - 1)
+// stack = stack - 1
+@SP
+AM=M-1
+D=M
+A=A-1
+M=D|M
+
+// not
+// *(stack - 1) = !*(stack - 1)
+@SP
+A=M-1
+M=!M
+
+
+
+// push segment i
+// segment in {LCL, ARG, THIS, THAT}
+@{segment}
+D=M
+@{index}
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+// push constant i
+@{index}
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+// push static i
+@{filename}.{index}
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+// push temp i
+@5
+D=A
+@{index}
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+// push pointer 0/1
+@{index}
+D=A
+@THIS
+A=D+A
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+// push pointer 0/1 V2
+// if 0
+@THIS
+D=M
+@SP...
+
+// if 1
+@THIS
+D=M
+@SP...
+
+
+
+// pop segment i
+@SP
+AM=M-1
+D=M
+@{segment}
+D=D+M
+@{index}
+D=D+A
+@SP
+A=M
+A=M
+A=D-A
+M=D-A
+
+// no pop constant
+
+// pop static i
+@SP
+AM=M-1
+D=M
+@{filename}.{index}
+M=D
+
+// pop temp i
+@SP
+AM=M-1
+D=M
+@5
+D=D+A
+@{index}
+D=D+A
+@SP
+A=M
+A=M
+A=D-A
+M=D-A
+
+// pop pointer i
+// if i == 0
+@SP
+AM=M-1
+D=M
+@THIS
+M=D
+
+
+// if i == 1
+@SP
+AM=M-1
+D=M
+@THAT
+M=D

@@ -1,0 +1,51 @@
+/** Implements helper class for output*/
+class OutputHelper
+{
+    /** Converts cursor row to pixels*/
+    function int cursorRowToPixels(int r)
+    {
+        return r * 11;
+    }
+
+    /** Converts cursor column to pixels*/
+    function int cursorColToPixels(int c)
+    {
+        return c * 8;
+    }
+
+    /** Erases string placed on specified row and column*/
+    function void eraseString(String str, int row, int col)
+    {
+        var int length, x1, y1, x2, y2;
+        let x1 = OutputHelper.cursorColToPixels(col);
+        let y1 = OutputHelper.cursorRowToPixels(row);
+
+        let length = str.length();
+        let x2 = x1 + ((length * 8) - 2);
+        let y2 = y1 + 11;
+
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x1, y1, x2, y2);
+        do Screen.setColor(true);
+        return;
+    }
+
+    /** Prints the characters of a string one by one at the specified time interval*/
+    function void printAnimation(String str, int timeInterval)
+    {
+        var int i, length;
+        var char c;
+
+        let length = str.length();
+        let i = 0;
+        while(i < length)
+        {
+            let c = str.charAt(i);
+            do Output.printChar(c);
+            let i = i + 1;
+            do Sys.wait(timeInterval);
+        }
+        do str.dispose();
+        return;
+    }
+}

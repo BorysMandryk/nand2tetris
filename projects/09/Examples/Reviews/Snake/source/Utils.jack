@@ -1,0 +1,60 @@
+class Utils {
+  static int random;
+
+  function void updateRandom() {
+    let random = random + 3;
+    if (random < 0) {
+      let random = 0;
+    }
+    return;
+  }
+
+  function int mod(int a, int b) {
+    return a - (b * (a/b));
+  }
+
+  function boolean and(boolean a, boolean b) {
+    if (a) {
+      if (b) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function boolean or(boolean a, boolean b) {
+    if (a) {
+      return true;
+    }
+
+    if (b) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function int round(int val, int mod) {
+    while (~(Utils.mod(val, mod) = 0)) {
+      let val = val + 1;
+    }
+
+    return val;
+  }
+
+  function int getRandom(int max) {
+    return Utils.mod(random, max);
+  }
+
+  function boolean collides(Point point1, Point point2) {
+    if (Utils.and(point1.getX() < (point2.getX() + 10),
+        Utils.and(point1.getX() > (point2.getX() - 10),
+        Utils.and(point1.getY() < (point2.getY() + 10),
+                  point1.getY() > (point2.getY() - 10))))) {
+      return true;
+    }
+
+    return false;
+  }
+}

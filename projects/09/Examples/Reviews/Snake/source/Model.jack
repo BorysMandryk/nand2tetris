@@ -1,0 +1,146 @@
+class Model {
+  field int width, height;
+  field boolean gameOver;
+  field Snake snake;
+  field Point apple, previousApple;
+  field boolean appleEaten;
+
+  constructor Model new(int aWidth, int aHeight) {
+    let width = aWidth - 10;
+    let height = aHeight - 10;
+
+    let snake = Snake.new(Utils.round(width / 2, 10), Utils.round(height / 2, 10));
+    let previousApple = Point.new(0, 0);
+    let apple = Point.new(0, 0);
+    do apple.randomizeCoordinates(width, height);
+
+    return this;
+  }
+
+  method void dispose() {
+    do snake.dispose();
+    do apple.dispose();
+    do previousApple.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void moveSnake() {
+    if (~gameOver) {
+      let appleEaten = collidesWithHead(apple);
+
+      if (appleEaten) {
+        do snake.moveAndGrow();
+        do spawnApple();
+      } else {
+        do snake.move();
+        let gameOver = hasSnakeCrashed();
+      }
+
+      do Utils.updateRandom();
+    }
+
+    return;
+  }
+
+  method void spawnApple() {
+    do previousApple.moveTo(apple);
+
+    while (collidesWithSnake(apple)) { // avoid spawning apple on snake
+      do apple.randomizeCoordinates(width, height);
+      do Utils.updateRandom();
+    }
+
+    return;
+  }
+
+  method boolean collidesWithSnake(Point point) {
+    return Utils.or(collidesWithHead(point), collidesWithTail(point));
+  }
+
+  method boolean collidesWithHead(Point point) {
+    return Utils.collides(point, snake.getHead());
+  }
+
+  method boolean collidesWithTail(Point point) {
+    var Array body;
+    var int i;
+
+    let body = snake.getBody();
+    let i = 1;
+
+    while (i < snake.getLength()) {
+      if (Utils.collides(point, body[i])) {
+        return true;
+      }
+
+      let i = i + 1;
+    }
+
+    return false;
+  }
+
+  method boolean hasSnakeCrashed() {
+    var Point head;
+    let head = snake.getHead();
+
+    if (Utils.or(head.getX() < 0,
+        Utils.or(head.getY() < 0,
+        Utils.or(head.getX() > (width),
+        Utils.or(head.getY() > (height),
+        collidesWithTail(head)))))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  method void turnSnakeUp() {
+    do snake.turnUp();
+    return;
+  }
+
+  method void turnSnakeRight() {
+    do snake.turnRight();
+    return;
+  }
+
+  method void turnSnakeDown() {
+    do snake.turnDown();
+    return;
+  }
+
+  method void turnSnakeLeft() {
+    do snake.turnLeft();
+    return;
+  }
+
+  method Point getSnakeHead() {
+    return snake.getHead();
+  }
+
+  method Point getSnakeLast() {
+    return snake.getLast();
+  }
+
+  method Point getApple() {
+    return apple;
+  }
+
+  method Point getPreviousApple() {
+    return previousApple;
+  }
+
+  method Point isAppleEaten() {
+    return appleEaten;
+  }
+
+  method boolean isGameOver() {
+    return gameOver;
+  }
+
+  method void gameOver() {
+    let gameOver = true;
+    return;
+  }
+}

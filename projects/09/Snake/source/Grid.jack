@@ -1,0 +1,121 @@
+/** Implements class containing a grid of cells*/
+class Grid
+{
+    field int rows, cols;
+    field int topPadding, leftPadding;
+    field Array cellGrid;
+
+    /** Creates a new object with specified top and left paddings and row and column counts*/
+    constructor Grid new(int top, int left, int rowCount, int colCount)
+    {
+        let topPadding = top;
+        let leftPadding = left;
+
+        if (rowCount > 16)
+        {
+            let rowCount = 16;
+        }
+        let rows = rowCount - topPadding;
+
+        if (colCount > 32)
+        {
+            let colCount = 32;
+        }
+        let cols = colCount - leftPadding;
+
+        do initCellGrid();
+        return this;
+    }
+
+    /** Disposes of this object and all containing cells*/
+    method void dispose()
+    {
+        var int i, j;
+        var Cell cellTemp;
+        var Array arrTemp; 
+        let i = 0;
+        while(i < rows)
+        {
+            let arrTemp = cellGrid[i];
+            let j = 0;
+            while(j < cols)
+            {
+                let cellTemp = arrTemp[j];
+                do cellTemp.erase();
+                do cellTemp.dispose();
+                let j = j + 1;
+            }
+            do arrTemp.dispose();
+            let i = i + 1;
+        }
+        do cellGrid.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Initializes cell grid*/
+    method void initCellGrid()
+    {
+        var int i, j;
+        var Cell cellTemp;
+        var Array arrTemp; 
+        let cellGrid = Array.new(rows);
+        let i = 0;
+        while(i < rows)
+        {
+            let arrTemp = Array.new(cols);
+            let j = 0;
+            while(j < cols)
+            {
+                let cellTemp = Cell.new(i, j, this);
+                let arrTemp[j] = cellTemp;
+                if((i = 0) | (i = (rows-1))
+                | (j = 0) | (j = (cols-1)))
+                {
+                    do cellTemp.setCellType(-1);
+                    do cellTemp.drawWall();
+                }
+                else
+                {
+                    do cellTemp.setCellType(0);
+                }
+                let j = j + 1;
+            }
+            let cellGrid[i] = arrTemp;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Rows getter*/
+    method int getRows()
+    {
+        return rows;
+    }
+
+    /** Cols getter*/
+    method int getCols()
+    {
+        return cols;
+    }
+
+    /** Returns cell by row and column*/
+    method Cell getCell(int row, int col)
+    {
+        var Array arrTemp;
+        let arrTemp = cellGrid[row];
+        return arrTemp[col];
+    }
+
+    /** Returns cell location by row and column*/
+    method int getCellLocation(int row, int col)
+    {
+        return (((topPadding + row) * 512)) + col + leftPadding;
+    }
+
+    /** Returns the total number of cells*/
+    method int getCellCount()
+    {
+        return rows * cols;
+    }
+}

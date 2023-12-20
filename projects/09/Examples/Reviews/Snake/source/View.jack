@@ -1,0 +1,65 @@
+class View {
+  field Model model;
+
+  constructor View new(Model Amodel) {
+    let model = Amodel;
+    return this;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void drawHead() {
+    do drawPoint(model.getSnakeHead());
+    return;
+  }
+
+  method void eraseLast() {
+    do erasePoint(model.getSnakeLast());
+    return;
+  }
+
+  method void drawApple() {
+    do drawPoint(model.getApple());
+    return;
+  }
+
+  method void erasePreviousApple() {
+    do erasePoint(model.getPreviousApple());
+    return;
+  }
+
+  method void drawPoint(Point point) {
+    do Screen.setColor(true);
+    do Screen.drawRectangle(point.getX(), point.getY(), point.getX() + 10, point.getY() + 10);
+
+    return;
+  }
+
+  method void erasePoint(Point point) {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(point.getX(), point.getY(), point.getX() + 10, point.getY() + 10);
+
+    return;
+  }
+
+  method void printScore(int score) {
+    do Output.moveCursor(0, 0);
+    do Output.printInt(score);
+    return;
+  }
+
+  method void printGameWon() {
+    do Output.moveCursor(0, 27);
+    do Output.printString("You won!");
+    return;
+  }
+
+  method void printGameLost() {
+    do Output.moveCursor(0, 20);
+    do Output.printString("You lost. Try again!");
+    return;
+  }
+}

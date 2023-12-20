@@ -1,0 +1,10 @@
+function CellType.obstacle 0
+push constant 1
+neg
+return
+function CellType.empty 0
+push constant 0
+return
+function CellType.food 0
+push constant 1
+return

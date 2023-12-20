@@ -1,0 +1,45 @@
+class Point {
+  field int x, y;
+
+  constructor Point new(int Ax, int Ay) {
+    let x = Ax;
+    let y = Ay;
+    return this;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void setX(int Ax) {
+    let x = Ax;
+    return;
+  }
+
+  method void setY(int Ay) {
+    let y = Ay;
+    return;
+  }
+
+  method int getX() {
+    return x;
+  }
+
+  method int getY() {
+    return y;
+  }
+
+  method void randomizeCoordinates(int maxX, int maxY) {
+    let x = Utils.getRandom(maxX);
+    let y = Utils.getRandom(maxY);
+    return;
+  }
+
+  method void moveTo(Point other) {
+    let x = other.getX();
+    let y = other.getY();
+    return;
+  }
+}
+

@@ -1,0 +1,126 @@
+/** Implements a single cell of a grid*/
+class Cell
+{
+    field int row, col;     // coordinates of the cell in the grid
+    field int cellType;     // -1 - obstacle, 0 - empty, 1 - food
+    field Grid grid;        // the grid that contains this cell
+
+    /** Creates a new cell object with specified coordinates and a pointer to the grid*/
+    constructor Cell new(int r, int c, Grid g)
+    {
+        let row = r;
+        let col = c;
+        let cellType = 0;
+        let grid = g;
+        return this;
+    }
+
+    /** Disposes of this object*/
+    method void dispose()
+    {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Cell type getter*/
+    method int getCellType()
+    {
+        return cellType;
+    }
+
+    /** Cell type setter*/
+    method void setCellType(int type)
+    {
+        let cellType = type;
+        return;
+    }
+
+    /** Row getter*/
+    method int getRow()
+    {
+        return row;
+    }
+
+    /** Col getter*/
+    method int getCol()
+    {
+        return col;
+    }
+
+    /** Calculates cell location on the screen*/
+    method int calculateLocation()
+    {
+        return grid.getCellLocation(row, col);
+    }
+
+    /** Draws wall in the cell*/
+    method void drawWall() {
+        var int memAddress, location;
+        let location = calculateLocation();
+        let memAddress = 16384 + location; 
+        do Memory.poke(memAddress+0, -1);
+        do Memory.poke(memAddress+32, -8185);
+        do Memory.poke(memAddress+64, -4081);
+        do Memory.poke(memAddress+96, -2019);
+        do Memory.poke(memAddress+128, -967);
+        do Memory.poke(memAddress+160, -399);
+        do Memory.poke(memAddress+192, -31);
+        do Memory.poke(memAddress+224, -63);
+        do Memory.poke(memAddress+256, -63);
+        do Memory.poke(memAddress+288, -31);
+        do Memory.poke(memAddress+320, -15);
+        do Memory.poke(memAddress+352, -7);
+        do Memory.poke(memAddress+384, -3);
+        do Memory.poke(memAddress+416, -1);
+        do Memory.poke(memAddress+448, -1);
+        do Memory.poke(memAddress+480, -1);
+        return;
+    }
+
+    /** Draws food in the cell*/
+    method void drawFood() {
+        var int memAddress;
+        let memAddress = 16384 + calculateLocation();
+        do Memory.poke(memAddress+0, 0);
+        do Memory.poke(memAddress+32, 0);
+        do Memory.poke(memAddress+64, 0);
+        do Memory.poke(memAddress+96, 960);
+        do Memory.poke(memAddress+128, 4080);
+        do Memory.poke(memAddress+160, 4080);
+        do Memory.poke(memAddress+192, 7800);
+        do Memory.poke(memAddress+224, 7224);
+        do Memory.poke(memAddress+256, 7224);
+        do Memory.poke(memAddress+288, 7800);
+        do Memory.poke(memAddress+320, 4080);
+        do Memory.poke(memAddress+352, 4080);
+        do Memory.poke(memAddress+384, 960);
+        do Memory.poke(memAddress+416, 0);
+        do Memory.poke(memAddress+448, 0);
+        do Memory.poke(memAddress+480, 0);
+        return;
+    }
+
+    /** Erases the cell from the screen*/
+    method void erase()
+    {
+        var int memAddress;
+        let memAddress = 16384 + calculateLocation();
+        do Memory.poke(memAddress+0, 0);
+        do Memory.poke(memAddress+32, 0);
+        do Memory.poke(memAddress+64, 0);
+        do Memory.poke(memAddress+96, 0);
+        do Memory.poke(memAddress+128, 0);
+        do Memory.poke(memAddress+160, 0);
+        do Memory.poke(memAddress+192, 0);
+        do Memory.poke(memAddress+224, 0);
+        do Memory.poke(memAddress+256, 0);
+        do Memory.poke(memAddress+288, 0);
+        do Memory.poke(memAddress+320, 0);
+        do Memory.poke(memAddress+352, 0);
+        do Memory.poke(memAddress+384, 0);
+        do Memory.poke(memAddress+416, 0);
+        do Memory.poke(memAddress+448, 0);
+        do Memory.poke(memAddress+480, 0);
+        return;
+    }
+}
