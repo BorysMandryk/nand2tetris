@@ -1,25 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-namespace JackAnalizer
+﻿namespace JackAnalizer
 {
     internal class JackTokenizer : IDisposable
     {
-        //private static readonly string[] _keywords = new string[]
-        //{
-        //    "class", "constructor", "function", "method", "field", "static",
-        //    "var", "int", "char", "boolean", "void", "true", "false",
-        //    "null", "this", "let", "do", "if", "else", "while", "return"
-        //};
         private static readonly char[] _symbols =
         [
-            '{', '}', '(', ')', '[', ']', '.', ',', ';', '+',
-            '-', '*', '/','&', '|', '<', '>', '=', '~'
+            '{',
+            '}',
+            '(',
+            ')',
+            '[',
+            ']',
+            '.',
+            ',',
+            ';',
+            '+',
+            '-',
+            '*',
+            '/',
+            '&',
+            '|',
+            '<',
+            '>',
+            '=',
+            '~'
         ];
         //private static readonly Regex _identifierRegex = new Regex(@"^(\D)([a-zA-Z0-9_]*)$");
         private static readonly Dictionary<string, Keyword> _stringKeywordDict = new Dictionary<string, Keyword>()
@@ -52,7 +55,6 @@ namespace JackAnalizer
         private TokenType _currentTokenType, _nextTokenType;
 
         public string Filename { get; private set; }
-        //private int _currentLine, _currentSymbol;
         public int CurrentLine { get; private set; }
         public int CurrentSymbol { get; private set; }
 
@@ -76,7 +78,6 @@ namespace JackAnalizer
             _disposed = true;
         }
 
-        // TODO Delete???? Architecture
         public string GetKeywordString(Keyword keyword)
         {
             return _stringKeywordDict.First(x => x.Value == keyword).Key;
@@ -106,7 +107,7 @@ namespace JackAnalizer
 
         public char GetSymbol()
         {
-            return _currentToken[0];    // TODO char.Parse() ???
+            return _currentToken[0];
         }
 
         public string GetIdentifier()
@@ -116,7 +117,7 @@ namespace JackAnalizer
 
         public int GetIntValue()
         {
-            return int.Parse(_currentToken);    // TODO TryParse??
+            return int.Parse(_currentToken);
         }
 
         public string GetStringValue()
@@ -134,10 +135,10 @@ namespace JackAnalizer
             char nextChar = Read();
 
             // Skip comments and whitespaces
-            while (char.IsWhiteSpace(nextChar) 
+            while (char.IsWhiteSpace(nextChar)
                 || (nextChar == '/' && "/*".Contains((char)_streamReader.Peek())))
             {
-                if(char.IsWhiteSpace(nextChar))
+                if (char.IsWhiteSpace(nextChar))
                 {
                     SkipWhitespaces();
                 }
@@ -146,7 +147,7 @@ namespace JackAnalizer
                     SkipComment();
                 }
 
-                if(_streamReader.EndOfStream)
+                if (_streamReader.EndOfStream)
                 {
                     return null;
                 }
@@ -172,7 +173,7 @@ namespace JackAnalizer
             if (char.IsLetter(nextChar) || nextChar == '_')
             {
                 string token = nextChar + ReadIdentifier();
-                if(_stringKeywordDict.Keys.Contains(token))
+                if (_stringKeywordDict.Keys.Contains(token))
                 {
                     _nextTokenType = TokenType.KEYWORD;
                 }
@@ -183,16 +184,15 @@ namespace JackAnalizer
 
                 return token;
             }
-            
+
             // Read an integer constant
-            if(char.IsDigit(nextChar))
+            if (char.IsDigit(nextChar))
             {
-                // _nextTokenType = INT
                 _nextTokenType = TokenType.INT_CONST;
                 return nextChar + ReadInt();
             }
 
-            throw new Exception($"Unsupported character {nextChar}");   // TODO Exception type 
+            throw new Exception($"Unsupported character {nextChar}");
         }
 
         private void SkipWhitespaces()
@@ -210,12 +210,12 @@ namespace JackAnalizer
             {
                 SkipOneLineComment();
             }
-            else if(ch == '*')
+            else if (ch == '*')
             {
                 SkipMultiLineComment();
             }
         }
-        
+
         private void SkipOneLineComment()
         {
             ReadLine();
@@ -224,7 +224,7 @@ namespace JackAnalizer
         private void SkipMultiLineComment()
         {
             char ch = Read();
-            while (ch != '*' || (char)_streamReader.Peek() != '/') 
+            while (ch != '*' || (char)_streamReader.Peek() != '/')
             {
                 ch = Read();
             }
@@ -235,7 +235,7 @@ namespace JackAnalizer
         {
             string token = "";
 
-            while(!_streamReader.EndOfStream && (char)_streamReader.Peek() != '"')
+            while (!_streamReader.EndOfStream && (char)_streamReader.Peek() != '"')
             {
                 token += Read();
             }
@@ -247,8 +247,8 @@ namespace JackAnalizer
         {
             char peek;
             string token = "";
-            while (!_streamReader.EndOfStream 
-                && (char.IsLetterOrDigit(peek = (char)_streamReader.Peek()) || peek == '_'))            
+            while (!_streamReader.EndOfStream
+                && (char.IsLetterOrDigit(peek = (char)_streamReader.Peek()) || peek == '_'))
             {
                 token += Read();
             }
@@ -268,12 +268,12 @@ namespace JackAnalizer
             return token;
         }
 
-        private char Read()     // Not current line and symbol but next
+        private char Read()
         {
             char ch = (char)_streamReader.Read();
 
             CurrentSymbol++;
-            if (ch == '\n')  // TODO not Environment.NewLine() ?????
+            if (ch == '\n')
             {
                 CurrentLine++;
                 CurrentSymbol = 0;

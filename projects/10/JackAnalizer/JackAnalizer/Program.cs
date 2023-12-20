@@ -106,7 +106,6 @@ namespace JackAnalizer
                             break;
                         case TokenType.SYMBOL:
                             char symbol = tokenizer.GetSymbol();
-                            // TODO special characters
                             element = new XElement("symbol", " " + symbol + " ");
                             element.WriteTo(xmlWriter);
                             Console.WriteLine(element);
@@ -125,7 +124,6 @@ namespace JackAnalizer
                             break;
                         case TokenType.STRING_CONST:
                             string stringConst = tokenizer.GetStringValue();
-                            // TODO double quotes
                             element = new XElement("stringConstant", " " + stringConst + " ");
                             element.WriteTo(xmlWriter);
                             Console.WriteLine(element);
@@ -135,57 +133,6 @@ namespace JackAnalizer
                     }
                 }
                 xmlWriter.WriteFullEndElement();
-            }
-        }
-
-        static void ProcessKeyword(Keyword keyword)
-        {
-            switch (keyword)
-            {
-                case Keyword.CLASS:
-                    break;
-                case Keyword.METHOD:
-                    break;
-                case Keyword.FUNCTION:
-                    break;
-                case Keyword.CONSTRUCTOR:
-                    break;
-                case Keyword.INT:
-                    break;
-                case Keyword.BOOLEAN:
-                    break;
-                case Keyword.CHAR:
-                    break;
-                case Keyword.VOID:
-                    break;
-                case Keyword.VAR:
-                    break;
-                case Keyword.STATIC:
-                    break;
-                case Keyword.FIELD:
-                    break;
-                case Keyword.LET:
-                    break;
-                case Keyword.DO:
-                    break;
-                case Keyword.IF:
-                    break;
-                case Keyword.ELSE:
-                    break;
-                case Keyword.WHILE:
-                    break;
-                case Keyword.RETURN:
-                    break;
-                case Keyword.TRUE:
-                    break;
-                case Keyword.FALSE:
-                    break;
-                case Keyword.NULL:
-                    break;
-                case Keyword.THIS:
-                    break;
-                default:
-                    break;
             }
         }
     }
