@@ -51,8 +51,8 @@
         };
 
         private readonly StreamReader _streamReader;
-        private string? _currentToken, _nextToken;
-        private TokenType _currentTokenType, _nextTokenType;
+        private string? _currentToken;
+        private TokenType _currentTokenType;
 
         public string Filename { get; private set; }
         public int CurrentLine { get; private set; }
@@ -64,7 +64,6 @@
         {
             Filename = path;
             _streamReader = new StreamReader(path);
-            _nextToken = GetNextToken();
         }
 
         public virtual void Dispose()
@@ -83,16 +82,10 @@
             return _stringKeywordDict.First(x => x.Value == keyword).Key;
         }
 
-        public bool HasMoreTokens()
+        public bool Advance()
         {
-            return _nextToken != null;
-        }
-
-        public void Advance()
-        {
-            _currentToken = _nextToken;
-            _currentTokenType = _nextTokenType;
-            _nextToken = GetNextToken();
+            _currentToken = GetNextToken();
+            return _currentToken != null;
         }
 
         public TokenType GetTokenType()
@@ -154,18 +147,17 @@
                 nextChar = Read();
             }
 
-
             // Read a string constant
             if (nextChar == '"')
             {
-                _nextTokenType = TokenType.STRING_CONST;
+                _currentTokenType = TokenType.STRING_CONST;
                 return ReadString();
             }
 
             // Read a symbol
             if (Array.IndexOf(_symbols, nextChar) != -1)
             {
-                _nextTokenType = TokenType.SYMBOL;
+                _currentTokenType = TokenType.SYMBOL;
                 return nextChar.ToString();
             }
 
@@ -175,11 +167,11 @@
                 string token = nextChar + ReadIdentifier();
                 if (_stringKeywordDict.Keys.Contains(token))
                 {
-                    _nextTokenType = TokenType.KEYWORD;
+                    _currentTokenType = TokenType.KEYWORD;
                 }
                 else
                 {
-                    _nextTokenType = TokenType.IDENTIFIER;
+                    _currentTokenType = TokenType.IDENTIFIER;
                 }
 
                 return token;
@@ -188,7 +180,7 @@
             // Read an integer constant
             if (char.IsDigit(nextChar))
             {
-                _nextTokenType = TokenType.INT_CONST;
+                _currentTokenType = TokenType.INT_CONST;
                 return nextChar + ReadInt();
             }
 

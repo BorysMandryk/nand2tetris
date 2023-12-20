@@ -444,7 +444,7 @@ namespace JackAnalizer
             return false;
         }
 
-        private void ExpectKeyword(params Keyword[] keywords)   // bool?
+        private void ExpectKeyword(params Keyword[] keywords) 
         {
             if (!MatchKeyword(keywords))
             {
@@ -482,10 +482,7 @@ namespace JackAnalizer
 
         private void Advance()
         {
-            if (_tokenizer.HasMoreTokens())
-            {
-                _tokenizer.Advance();
-            }
+            _tokenizer.Advance();
         }
     }
 }

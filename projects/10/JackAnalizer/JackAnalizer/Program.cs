@@ -8,7 +8,7 @@ namespace JackAnalizer
     {
         static void Main(string[] args)
         {
-            const string baseDir = @"D:\nand2tetris\projects\10";
+            const string baseDir = @"D:\nand2tetris\projects\10\Tests";
             string filename = "Square";
             string path = Path.Combine(baseDir, filename);
 
@@ -90,9 +90,8 @@ namespace JackAnalizer
             {
                 xmlWriter.WriteStartElement("tokens");
 
-                while (tokenizer.HasMoreTokens())
+                while (tokenizer.Advance())
                 {
-                    tokenizer.Advance();
                     TokenType tokenType = tokenizer.GetTokenType();
                     XElement element;
 
