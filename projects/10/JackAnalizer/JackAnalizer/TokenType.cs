@@ -1,4 +1,4 @@
-﻿namespace JackAnalizer
+﻿namespace JackAnalyzer
 {
     public enum TokenType
     {

@@ -1,9 +1,14 @@
-﻿namespace JackAnalizer
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace JackAnalyzer
 {
     internal class JackTokenizer : IDisposable
     {
         private static readonly char[] _symbols =
-        [
+        {
             '{',
             '}',
             '(',
@@ -23,7 +28,7 @@
             '>',
             '=',
             '~'
-        ];
+        };
         //private static readonly Regex _identifierRegex = new Regex(@"^(\D)([a-zA-Z0-9_]*)$");
         private static readonly Dictionary<string, Keyword> _stringKeywordDict = new Dictionary<string, Keyword>()
         {

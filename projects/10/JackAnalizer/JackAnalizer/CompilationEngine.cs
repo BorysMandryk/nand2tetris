@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace JackAnalizer
+namespace JackAnalyzer
 {
     internal class CompilationEngine : IDisposable
     {
@@ -13,9 +15,9 @@ namespace JackAnalizer
 
         private bool _disposed = false;
         private static readonly char[] _binaryOperators =
-            ['+', '-', '*', '/', '&', '|', '<', '>', '='];
+            { '+', '-', '*', '/', '&', '|', '<', '>', '=' };
         private static readonly char[] _unaryOperators =
-            ['-', '~'];
+            { '-', '~' };
 
         public CompilationEngine(string input, string output)
         {

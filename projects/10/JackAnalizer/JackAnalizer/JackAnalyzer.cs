@@ -1,19 +1,22 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace JackAnalizer
+namespace JackAnalyzer
 {
-    internal class Program
+    internal class JackAnalyzer
     {
         static void Main(string[] args)
         {
-            const string baseDir = @"D:\nand2tetris\projects\10\Tests";
-            string filename = "Square";
-            string path = Path.Combine(baseDir, filename);
+            //const string baseDir = @"D:\nand2tetris\projects\10\Tests";
+            //string filename = "Square";
+            //string path = Path.Combine(baseDir, filename);
 
             //Tokenize(path);
-            Compile(path);
+
+            Compile(args[0]);
         }
 
         static void Compile(string path)
@@ -45,7 +48,7 @@ namespace JackAnalizer
         {
             string dir = Path.GetDirectoryName(path);
             string filename = Path.GetFileNameWithoutExtension(path);
-            string outputPath = Path.Combine(dir, $"My{filename}.xml");
+            string outputPath = Path.Combine(dir, $"{filename}.xml");
             using CompilationEngine engine = new CompilationEngine(path, outputPath);
         }
 
