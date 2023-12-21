@@ -1,4 +1,7 @@
-﻿namespace JackAnalizer
+﻿using System;
+using System.IO;
+
+namespace JackAnalyzer
 {
     internal class Logger : IDisposable
     {

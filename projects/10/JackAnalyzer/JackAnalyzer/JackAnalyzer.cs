@@ -1,19 +1,22 @@
-﻿using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace JackAnalizer
+namespace JackAnalyzer
 {
-    internal class Program
+    internal class JackAnalyzer
     {
         static void Main(string[] args)
         {
-            const string baseDir = @"D:\nand2tetris\projects\10";
-            string filename = "Square";
-            string path = Path.Combine(baseDir, filename);
+            //const string baseDir = @"D:\nand2tetris\projects\10\Tests";
+            //string filename = "Square";
+            //string path = Path.Combine(baseDir, filename);
 
             //Tokenize(path);
-            Compile(path);
+
+            Compile(args[0]);
         }
 
         static void Compile(string path)
@@ -45,7 +48,7 @@ namespace JackAnalizer
         {
             string dir = Path.GetDirectoryName(path);
             string filename = Path.GetFileNameWithoutExtension(path);
-            string outputPath = Path.Combine(dir, $"My{filename}.xml");
+            string outputPath = Path.Combine(dir, $"{filename}.xml");
             using CompilationEngine engine = new CompilationEngine(path, outputPath);
         }
 
@@ -90,9 +93,8 @@ namespace JackAnalizer
             {
                 xmlWriter.WriteStartElement("tokens");
 
-                while (tokenizer.HasMoreTokens())
+                while (tokenizer.Advance())
                 {
-                    tokenizer.Advance();
                     TokenType tokenType = tokenizer.GetTokenType();
                     XElement element;
 
@@ -106,7 +108,6 @@ namespace JackAnalizer
                             break;
                         case TokenType.SYMBOL:
                             char symbol = tokenizer.GetSymbol();
-                            // TODO special characters
                             element = new XElement("symbol", " " + symbol + " ");
                             element.WriteTo(xmlWriter);
                             Console.WriteLine(element);
@@ -125,7 +126,6 @@ namespace JackAnalizer
                             break;
                         case TokenType.STRING_CONST:
                             string stringConst = tokenizer.GetStringValue();
-                            // TODO double quotes
                             element = new XElement("stringConstant", " " + stringConst + " ");
                             element.WriteTo(xmlWriter);
                             Console.WriteLine(element);
@@ -135,57 +135,6 @@ namespace JackAnalizer
                     }
                 }
                 xmlWriter.WriteFullEndElement();
-            }
-        }
-
-        static void ProcessKeyword(Keyword keyword)
-        {
-            switch (keyword)
-            {
-                case Keyword.CLASS:
-                    break;
-                case Keyword.METHOD:
-                    break;
-                case Keyword.FUNCTION:
-                    break;
-                case Keyword.CONSTRUCTOR:
-                    break;
-                case Keyword.INT:
-                    break;
-                case Keyword.BOOLEAN:
-                    break;
-                case Keyword.CHAR:
-                    break;
-                case Keyword.VOID:
-                    break;
-                case Keyword.VAR:
-                    break;
-                case Keyword.STATIC:
-                    break;
-                case Keyword.FIELD:
-                    break;
-                case Keyword.LET:
-                    break;
-                case Keyword.DO:
-                    break;
-                case Keyword.IF:
-                    break;
-                case Keyword.ELSE:
-                    break;
-                case Keyword.WHILE:
-                    break;
-                case Keyword.RETURN:
-                    break;
-                case Keyword.TRUE:
-                    break;
-                case Keyword.FALSE:
-                    break;
-                case Keyword.NULL:
-                    break;
-                case Keyword.THIS:
-                    break;
-                default:
-                    break;
             }
         }
     }

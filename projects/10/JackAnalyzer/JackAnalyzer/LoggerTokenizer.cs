@@ -1,4 +1,6 @@
-﻿namespace JackAnalizer
+﻿using System.IO;
+
+namespace JackAnalyzer
 {
     internal class LoggerTokenizer : Logger
     {

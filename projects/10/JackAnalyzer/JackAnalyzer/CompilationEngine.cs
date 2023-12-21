@@ -1,49 +1,11 @@
-﻿//using Lucene.Net.Support;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace JackAnalizer
+namespace JackAnalyzer
 {
-    //public abstract class BaseToken /*: ITokenProcessable*/
-    //{
-    //    public TokenType CurrentTokenType { get; }
-    //    public abstract bool Check();
-
-    //    public abstract void Expect();
-
-    //    public abstract bool Match();
-    //}
-
-    ////public interface ITokenProcessable
-    ////{
-    ////    bool Check();
-    ////    bool Match();
-    ////    void Expect();
-
-    ////}
-
-    //public class KeywordToken : BaseToken
-    //{
-    //    public new TokenType CurrentTokenType => TokenType.KEYWORD;
-    //    public override bool Check()
-    //    {
-    //        //return keywords.Contains(_tokenizer.GetKeyword());
-    //        return false;
-    //    }
-
-    //    public override void Expect()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public override bool Match()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    //protected HashMap<Keyword> keywordType =>
-    //}
     internal class CompilationEngine : IDisposable
     {
         private JackTokenizer _tokenizer;
@@ -52,6 +14,10 @@ namespace JackAnalizer
         private LoggerTokenizer _logger;
 
         private bool _disposed = false;
+        private static readonly char[] _binaryOperators =
+            { '+', '-', '*', '/', '&', '|', '<', '>', '=' };
+        private static readonly char[] _unaryOperators =
+            { '-', '~' };
 
         public CompilationEngine(string input, string output)
         {
@@ -63,7 +29,6 @@ namespace JackAnalizer
             //settings.OmitXmlDeclaration = true;
             //settings.NewLineChars = Environment.NewLine;
             //settings.NewLineHandling = NewLineHandling.Entitize;
-            //_xmlWriter = XmlWriter.Create(Console.Out, settings);
             //_xmlWriter = XmlWriter.Create(output, settings);
             _xmlWriter = new XmlTextWriter(output, new UTF8Encoding(false));
             _xmlWriter.Formatting = Formatting.Indented;
@@ -111,12 +76,13 @@ namespace JackAnalizer
             _xmlWriter.WriteStartElement("classVarDec");
             ExpectKeyword(Keyword.STATIC, Keyword.FIELD);
 
-            if (!MatchIdentifier())  // GetType
+            // type
+            if (!MatchIdentifier())
             {
                 ExpectKeyword(Keyword.INT, Keyword.CHAR, Keyword.BOOLEAN);
             }
 
-            //GetVarName();
+            // varName
             ExpectIdentifier();
             while (MatchSymbol(','))
             {
@@ -132,7 +98,8 @@ namespace JackAnalizer
             _xmlWriter.WriteStartElement("subroutineDec");
             ExpectKeyword(Keyword.CONSTRUCTOR, Keyword.FUNCTION, Keyword.METHOD);
 
-            if (!MatchIdentifier())  // GetType
+            // type
+            if (!MatchIdentifier())
             {
                 ExpectKeyword(Keyword.VOID, Keyword.INT, Keyword.CHAR, Keyword.BOOLEAN);
             }
@@ -322,21 +289,9 @@ namespace JackAnalizer
         public void CompileExpression()
         {
             _xmlWriter.WriteStartElement("expression");
-            char[] operands =
-            // TODO static readonly
-            [
-                '+',
-                '-',
-                '*',
-                '/',
-                '&',
-                '|',
-                '<',
-                '>',
-                '='
-            ];
+
             CompileTerm();
-            while (MatchSymbol(operands))  // TODO op
+            while (MatchSymbol(_binaryOperators))
             {
                 CompileTerm();
             }
@@ -356,7 +311,7 @@ namespace JackAnalizer
                     CompileExpression();
                     ExpectSymbol(']');
                 }
-                else if (MatchSymbol('('))  // TODO
+                else if (MatchSymbol('('))
                 {
                     CompileExpressionList();
                     ExpectSymbol(')');
@@ -374,14 +329,13 @@ namespace JackAnalizer
                 CompileExpression();
                 ExpectSymbol(')');
             }
-            else if (MatchSymbol('-', '~'))  // TODO unaryOp
+            else if (MatchSymbol(_unaryOperators))
             {
                 CompileTerm();
             }
             else
             {
                 _logger.Log();
-                // TODO Logging
             }
             _xmlWriter.WriteFullEndElement();
         }
@@ -437,11 +391,6 @@ namespace JackAnalizer
 
         private bool MatchKeyword(params Keyword[] keywords)
         {
-            //if (TokenType.KEYWORD != _tokenizer.GetTokenType())
-            //{
-            //    throw new InvalidTokenTypeException(_tokenizer.GetTokenType());
-            //}
-
             if (TokenType.KEYWORD == _tokenizer.GetTokenType()
                 && keywords.Contains(_tokenizer.GetKeyword()))
             {
@@ -454,11 +403,6 @@ namespace JackAnalizer
 
         private bool MatchSymbol(params char[] symbols)
         {
-            //if(TokenType.SYMBOL != _tokenizer.GetTokenType())
-            //{
-            //    throw new InvalidTokenTypeException(_tokenizer.GetTokenType());
-            //}
-
             if (TokenType.SYMBOL == _tokenizer.GetTokenType()
                 && symbols.Contains(_tokenizer.GetSymbol()))
             {
@@ -502,12 +446,11 @@ namespace JackAnalizer
             return false;
         }
 
-        private void ExpectKeyword(params Keyword[] keywords)   // bool?
+        private void ExpectKeyword(params Keyword[] keywords) 
         {
             if (!MatchKeyword(keywords))
             {
                 _logger.Log();
-                // TODO Logger
             }
         }
 
@@ -516,7 +459,6 @@ namespace JackAnalizer
             if (!MatchSymbol(symbols))
             {
                 _logger.Log();
-                // TODO Logger
             }
         }
 
@@ -525,16 +467,15 @@ namespace JackAnalizer
             if (!MatchIdentifier())
             {
                 _logger.Log();
-                // TODO Logger
             }
         }
-        // TODO ??
+
         private bool CheckKeyword(params Keyword[] keywords)
         {
             return TokenType.KEYWORD == _tokenizer.GetTokenType()
                 && keywords.Contains(_tokenizer.GetKeyword());
         }
-        // TODO ??
+
         private bool CheckSymbol(params char[] symbols)
         {
             return TokenType.SYMBOL == _tokenizer.GetTokenType()
@@ -543,10 +484,7 @@ namespace JackAnalizer
 
         private void Advance()
         {
-            if (_tokenizer.HasMoreTokens())
-            {
-                _tokenizer.Advance();
-            }
+            _tokenizer.Advance();
         }
     }
 }
