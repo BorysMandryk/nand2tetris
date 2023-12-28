@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace JackCompiler
 {
@@ -29,35 +27,9 @@ namespace JackCompiler
             '=',
             '~'
         };
-        //private static readonly Regex _identifierRegex = new Regex(@"^(\D)([a-zA-Z0-9_]*)$");
-        private static readonly Dictionary<string, Keyword> _stringKeywordDict = new Dictionary<string, Keyword>()
-        {
-            { "class", Keyword.CLASS},
-            { "constructor", Keyword.CONSTRUCTOR},
-            { "function", Keyword.FUNCTION},
-            { "method", Keyword.METHOD},
-            { "field", Keyword.FIELD},
-            { "static", Keyword.STATIC},
-            { "var", Keyword.VAR},
-            { "int", Keyword.INT},
-            { "char", Keyword.CHAR},
-            { "boolean", Keyword.BOOLEAN},
-            { "void", Keyword.VOID},
-            { "true", Keyword.TRUE},
-            { "false", Keyword.FALSE},
-            { "null", Keyword.NULL},
-            { "this", Keyword.THIS},
-            { "let", Keyword.LET},
-            { "do", Keyword.DO},
-            { "if", Keyword.IF},
-            { "else", Keyword.ELSE},
-            { "while", Keyword.WHILE},
-            { "return", Keyword.RETURN}
-        };
 
         private readonly StreamReader _streamReader;
-        private string? _currentToken;
-        private TokenType _currentTokenType;
+        private Token? _currentToken;
 
         public string Filename { get; private set; }
         public int CurrentLine { get; private set; }
@@ -82,48 +54,18 @@ namespace JackCompiler
             _disposed = true;
         }
 
-        public string GetKeywordString(Keyword keyword)
-        {
-            return _stringKeywordDict.First(x => x.Value == keyword).Key;
-        }
-
         public bool Advance()
         {
             _currentToken = GetNextToken();
             return _currentToken != null;
         }
 
-        public TokenType GetTokenType()
-        {
-            return _currentTokenType;
-        }
-
-        public Keyword GetKeyword()
-        {
-            return _stringKeywordDict[_currentToken];
-        }
-
-        public char GetSymbol()
-        {
-            return _currentToken[0];
-        }
-
-        public string GetIdentifier()
+        public Token GetCurrentToken()
         {
             return _currentToken;
         }
 
-        public int GetIntValue()
-        {
-            return int.Parse(_currentToken);
-        }
-
-        public string GetStringValue()
-        {
-            return _currentToken;
-        }
-
-        private string? GetNextToken()
+        private Token? GetNextToken()
         {
             if (_streamReader.EndOfStream)
             {
@@ -155,38 +97,33 @@ namespace JackCompiler
             // Read a string constant
             if (nextChar == '"')
             {
-                _currentTokenType = TokenType.STRING_CONST;
-                return ReadString();
+                return new Token(TokenType.STRING_CONST, ReadString());
             }
 
             // Read a symbol
             if (Array.IndexOf(_symbols, nextChar) != -1)
             {
-                _currentTokenType = TokenType.SYMBOL;
-                return nextChar.ToString();
+                return new Token(TokenType.SYMBOL, nextChar);
             }
 
             // Read an identifier
             if (char.IsLetter(nextChar) || nextChar == '_')
             {
                 string token = nextChar + ReadIdentifier();
-                if (_stringKeywordDict.Keys.Contains(token))
+                if (Enum.TryParse(typeof(Keyword), token, true, out object result))
                 {
-                    _currentTokenType = TokenType.KEYWORD;
+                    return new Token(TokenType.KEYWORD, result);
                 }
                 else
                 {
-                    _currentTokenType = TokenType.IDENTIFIER;
+                    return new Token(TokenType.IDENTIFIER, token);
                 }
-
-                return token;
             }
 
             // Read an integer constant
             if (char.IsDigit(nextChar))
             {
-                _currentTokenType = TokenType.INT_CONST;
-                return nextChar + ReadInt();
+                return new Token(TokenType.INT_CONST, int.Parse(nextChar + ReadInt()));
             }
 
             throw new Exception($"Unsupported character {nextChar}");
