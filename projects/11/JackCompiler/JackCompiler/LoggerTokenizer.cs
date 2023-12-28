@@ -14,9 +14,10 @@ namespace JackCompiler
 
         public void Log()
         {
+            Token token = _tokenizer.GetCurrentToken();
             Log($"{_tokenizer.Filename} " +
                 $"({_tokenizer.CurrentLine}, {_tokenizer.CurrentSymbol}): " +
-                $"Unexpected token type {_tokenizer.GetTokenType()} ");
+                $"Unexpected token {token.Value} ");
         }
     }
 }
