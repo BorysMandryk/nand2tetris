@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace JackCompiler
+namespace JackCompiler.SymbolTable
 {
     internal class SymbolTable
     {
@@ -24,7 +24,7 @@ namespace JackCompiler
 
         public VariableKind KindOf(string name)
         {
-            if(_table.TryGetValue(name, out SymbolTableItem item))
+            if (_table.TryGetValue(name, out SymbolTableItem item))
             {
                 return item.Kind;
             }
@@ -45,7 +45,7 @@ namespace JackCompiler
         {
             if (_table.TryGetValue(name, out SymbolTableItem item))
             {
-                type =  item.Type;
+                type = item.Type;
                 return true;
             }
             type = default;

@@ -1,6 +1,7 @@
-﻿using System.IO;
+﻿using JackCompiler.SyntaxAnalyzer;
+using System.IO;
 
-namespace JackCompiler
+namespace JackCompiler.Logger
 {
     internal class LoggerTokenizer : Logger
     {

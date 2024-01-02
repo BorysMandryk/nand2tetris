@@ -1,4 +1,4 @@
-﻿namespace JackCompiler
+﻿namespace JackCompiler.SymbolTable
 {
     public enum VariableKind
     {

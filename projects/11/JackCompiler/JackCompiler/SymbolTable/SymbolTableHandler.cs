@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JackCompiler
+namespace JackCompiler.SymbolTable
 {
     internal class SymbolTableHandler
     {
@@ -22,26 +22,26 @@ namespace JackCompiler
         {
             if (kind == VariableKind.STATIC || kind == VariableKind.FIELD)
             {
-                _classTable.Define(name, kind, type, VarCount(kind) + 1);
+                _classTable.Define(name, kind, type, VarCount(kind));
                 return;
             }
             if (kind == VariableKind.ARG || kind == VariableKind.VAR)
             {
-                _subroutineTable.Define(name, kind, type, VarCount(kind) + 1);
+                _subroutineTable.Define(name, kind, type, VarCount(kind));
                 return;
             }
-            
+
             throw new ArgumentException($"Cannot define variable of kind {kind}");
 
         }
 
         public int VarCount(VariableKind kind)
         {
-            if(kind == VariableKind.STATIC || kind == VariableKind.FIELD)
+            if (kind == VariableKind.STATIC || kind == VariableKind.FIELD)
             {
                 return _classTable.VarCount(kind);
             }
-            
+
             if (kind == VariableKind.ARG || kind == VariableKind.VAR)
             {
                 return _subroutineTable.VarCount(kind);
@@ -53,11 +53,11 @@ namespace JackCompiler
         public VariableKind KindOf(string name)
         {
             VariableKind kind = _subroutineTable.KindOf(name);
-            if(kind != VariableKind.NONE)
+            if (kind != VariableKind.NONE)
             {
                 return kind;
             }
-            
+
             kind = _classTable.KindOf(name);
             return kind;
         }
@@ -65,11 +65,11 @@ namespace JackCompiler
         public string TypeOf(string name)
         {
             string type;
-            if(_subroutineTable.TryTypeOf(name, out type))
+            if (_subroutineTable.TryTypeOf(name, out type))
             {
                 return type;
             }
-            if(_classTable.TryTypeOf(name, out type))
+            if (_classTable.TryTypeOf(name, out type))
             {
                 return type;
             }

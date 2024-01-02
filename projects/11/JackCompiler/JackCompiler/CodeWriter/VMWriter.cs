@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace JackCompiler
+namespace JackCompiler.CodeWriter
 {
     internal class VMWriter : IDisposable
     {
@@ -19,7 +19,7 @@ namespace JackCompiler
         };
 
         private static readonly Dictionary<ArithmeticCommand, string> _arithmeticToString = new Dictionary<ArithmeticCommand, string>()
-        { 
+        {
             {ArithmeticCommand.ADD, "add" },
             {ArithmeticCommand.SUB, "sub" },
             {ArithmeticCommand.NEG, "neg" },
@@ -42,7 +42,7 @@ namespace JackCompiler
 
         public virtual void Dispose()
         {
-            if(_disposed)
+            if (_disposed)
             {
                 return;
             }

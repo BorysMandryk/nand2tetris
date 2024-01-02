@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace JackCompiler
+namespace JackCompiler.Logger
 {
     internal class Logger : IDisposable
     {
@@ -27,7 +27,7 @@ namespace JackCompiler
 
         public void Log(string str)
         {
-            if(Show)
+            if (Show)
             {
                 _writer.WriteLine(str);
             }

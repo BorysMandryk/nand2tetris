@@ -1,4 +1,4 @@
-﻿namespace JackCompiler
+﻿namespace JackCompiler.SyntaxAnalyzer
 {
     public enum Keyword
     {

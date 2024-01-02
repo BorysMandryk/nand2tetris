@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace JackCompiler
+namespace JackCompiler.SyntaxAnalyzer
 {
     internal class JackTokenizer : IDisposable
     {

@@ -1,4 +1,4 @@
-﻿namespace JackCompiler
+﻿namespace JackCompiler.CodeWriter
 {
     public enum MemorySegment
     {
