@@ -7,9 +7,12 @@
  * A library for handling user input from the keyboard.
  */
 class Keyboard {
-
+    static int keyboard, bufferSize;
     /** Initializes the keyboard. */
     function void init() {
+        let keyboard = 24576;
+        let bufferSize = 40;
+        return;
     } 
 
     /**
@@ -33,6 +36,16 @@ class Keyboard {
      * F1 - F12 = 141 - 152
      */
     function char keyPressed() {
+        var char c;
+        let c = Memory.peek(keyboard);
+        if((c > 0) & (c < 153))
+        {
+            return c;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     /**								
@@ -41,6 +54,19 @@ class Keyboard {
      * of the pressed key.
      */
     function char readChar() {
+        var char c;
+        do Output.printChar(0);
+
+        let c = Keyboard.keyPressed();
+        while (c = 0)
+        {
+            let c = Keyboard.keyPressed();
+        }
+        while (~(Keyboard.keyPressed() = 0))
+        { }
+        do Output.backSpace();
+        do Output.printChar(c);
+        return c;
     }
 
     /**								
@@ -49,6 +75,49 @@ class Keyboard {
      * and returns its value. Also handles user backspaces.
      */
     function String readLine(String message) {
+        var char c;
+        var String str, newStr;
+        var int cnt, length;
+        do Output.printString(message);
+        let cnt = 0;
+        let length = bufferSize;
+        let str = String.new(length);
+        while(true)
+        {
+            let c = Keyboard.readChar();
+            if(c = String.newLine())
+            {
+                return str;
+            }
+
+            if(c = String.backSpace())
+            {
+                let cnt = cnt - 1;
+                do str.eraseLastChar();
+            }
+            else
+            {
+                if(cnt < (length - 1))
+                {
+                    let str = str.appendChar(c);
+                    let cnt = cnt + 1;
+                }
+                else
+                {
+                    let newStr = String.new(length + bufferSize);
+                    let cnt = 0;
+                    while(cnt < (length - 1))
+                    {
+                        let newStr = newStr.appendChar(str.charAt(cnt));
+                        let cnt = cnt + 1;
+                    }
+                    do str.dispose();
+                    let str = newStr;
+                    let length = length + bufferSize;
+                }
+            }
+        }
+        return 0;
     }   
 
     /**								
@@ -58,5 +127,28 @@ class Keyboard {
      * entered text is detected). Also handles user backspaces. 
      */
     function int readInt(String message) {
+        var char c;
+        var String str;
+        do Output.printString(message);
+        let str = String.new(6);
+
+        while(true)
+        {
+            let c = Keyboard.readChar();
+            if(~((c = 45) | ((c > 47) & (c < 58)) | (c = String.backSpace())))
+            {
+                return str.intValue();
+            }
+
+            if(c = String.backSpace())
+            {
+                do str.eraseLastChar();
+            }
+            else
+            {
+                let str = str.appendChar(c);
+            }
+        }
+        return 0;
     }
 }
