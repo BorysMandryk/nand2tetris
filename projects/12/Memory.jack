@@ -9,26 +9,87 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
-
+    static Array ram;
+    static Array heap;
+    static int freeList;
     /** Initializes the class. */
     function void init() {
+        let ram = 0;
+        let heap = 2048;
+        let freeList = heap;
+        let heap[0] = null;
+        let heap[1] = 14334;
+        return;
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+        return ram[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
     }
 
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+        var Array segment;
+        var int minSIze, fullSIze, minSegAddr;
+        let segment = freeList;
+        let minSegAddr = segment;
+        let minSIze = segment[1];
+        let fullSIze = size + 2;
+        while((~(minSIze = fullSIze)) & (~(segment[0] = null)))
+        {
+            if((~(segment[1] < fullSIze)) & (segment[1] < minSIze))
+            {
+                let minSIze = segment[1];
+                let minSegAddr = segment;
+            }
+            let segment = segment[0]; 
+        }
+
+        let segment = minSegAddr;
+        let segment[1] = segment[1] - fullSIze;
+
+        // new segment
+        let segment = segment + segment[1] + 2;
+        let segment[0] = null;
+        let segment[1] = size;
+        
+        return segment + 2;
     }
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
+        var Array segment, prevSeg, nextSeg;
+        let segment = o - 2;
+        let prevSeg = freeList;
+        let nextSeg = prevSeg[0];
+
+        while((~(nextSeg = null)) & (nextSeg < segment))
+        {
+            let prevSeg = nextSeg;
+            let nextSeg = prevSeg[0];
+        }
+        let prevSeg[0] = segment;
+        let segment[0] = nextSeg;
+
+        if((segment + segment[1] + 2) = nextSeg)
+        {
+            let segment[1] = segment[1] + nextSeg[1] + 2;
+            let segment[0] = nextSeg[0];
+        }
+
+        if((prevSeg + prevSeg[1] + 2) = segment)
+        {
+            let prevSeg[1] = prevSeg[1] + segment[1] + 2;
+            let prevSeg[0] = segment[0];
+        }
+        return;
     }    
 }
