@@ -190,8 +190,6 @@ class Output {
         let cursorX = j;
         let cursorY = i;
         do Output.printCharInPlace(32);
-        let cursorX = j;
-        let cursorY = i;
         return;
     }
 
@@ -213,7 +211,7 @@ class Output {
         {
             while(j < 11)
             {
-                let value = (Memory.peek(addr) & (-255)) | map[j];
+                let value = (Memory.peek(addr) & (-256)) | map[j];
                 do Memory.poke(addr, value);
                 let j = j + 1;
                 let addr = addr + 32;
@@ -235,6 +233,18 @@ class Output {
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
+        if (c = String.backSpace())
+        {
+            do Output.backSpace();
+            return;
+        }
+
+        if (c = String.newLine())
+        {
+            do Output.println();
+            return;
+        }
+
         do Output.printCharInPlace(c);
         if(cursorX = 63)
         {
