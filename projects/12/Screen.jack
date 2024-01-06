@@ -85,6 +85,45 @@ class Screen {
         return;
     }
 
+    function void drawHorizontalLineOptimized(int x1, int x2, int y)
+    {
+        var int addr1, addr2, x1mod, x2mod, temp;
+        if(x1 > x2)
+        {
+            let temp = x1;
+            let x1 = x2;
+            let x2 = temp;
+        }
+
+        let addr1 = 16384 + (y * 32) + (x1 / 16);
+        let addr2 = 16384 + (y * 32) + (x2 / 16);
+
+        if (addr1 = addr2)
+        {
+            do Screen.drawHorizontalLine(x1, x2, y);
+            return;
+        }
+
+        let x1mod = x1 & 15;
+        let x2mod = x2 & 15;
+
+        if(~(x1mod = 0))
+        {
+            do Screen.drawHorizontalLine(x1, x1 + 16 - x1mod, y);
+            let addr1 = addr1 + 1;
+        }
+        if(~(x2mod = 0))
+        {
+            do Screen.drawHorizontalLine(x2 - x2mod, x2, y);
+        }
+        while(addr1 < addr2)
+        {
+            do Memory.poke(addr1, color);
+            let addr1 = addr1 + 1;
+        }
+        return;
+    }
+
     /** Draws a vertical line from y1 to y2 at column x. */
     function void drawVerticalLine(int x, int y1, int y2)
     {
@@ -166,7 +205,7 @@ class Screen {
     function void drawLine(int x1, int y1, int x2, int y2) {
         if(y1 = y2)
         {
-            do Screen.drawHorizontalLine(x1, x2, y1);
+            do Screen.drawHorizontalLineOptimized(x1, x2, y1);
             return;
         }
         if(x1 = x2)
